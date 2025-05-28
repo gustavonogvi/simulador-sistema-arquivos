@@ -1,0 +1,5 @@
+br/com/gustavo/simuladorfs/Journal.class
+br/com/gustavo/simuladorfs/Main.class
+br/com/gustavo/simuladorfs/DirectoryEntry.class
+br/com/gustavo/simuladorfs/FileSystemSimulator.class
+br/com/gustavo/simuladorfs/FileEntry.class
