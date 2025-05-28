@@ -14,12 +14,24 @@ public class DirectoryEntry {
         this.parent = parent;
     }
 
+    private DirectoryEntry getRoot() {
+        DirectoryEntry dir = this;
+        while (dir.parent != null) {
+            dir = dir.parent;
+        }
+        return dir;
+    }
+
     private DirectoryEntry getDirectory(String path) {
         String[] parts = path.split("/");
-        DirectoryEntry current = this;
+        DirectoryEntry current = path.startsWith("/") ? getRoot() : this;
         for (String part : parts) {
-            if (part.isEmpty()) continue;
-            current = current.subdirs.get(part);
+            if (part.isEmpty() || part.equals(".")) continue;
+            if (part.equals("..")) {
+                current = current.parent != null ? current.parent : current;
+            } else {
+                current = current.subdirs.get(part);
+            }
             if (current == null) return null;
         }
         return current;
@@ -27,36 +39,39 @@ public class DirectoryEntry {
 
     public void createDirectory(String path) {
         String[] parts = path.split("/");
-        DirectoryEntry current = this;
+        DirectoryEntry current = path.startsWith("/") ? getRoot() : this;
         for (String part : parts) {
-            if (part.isEmpty()) continue;
-            current.subdirs.putIfAbsent(part, new DirectoryEntry(part, current));
-            current = current.subdirs.get(part);
+            if (part.isEmpty() || part.equals(".")) continue;
+            if (part.equals("..")) {
+                current = current.parent != null ? current.parent : current;
+            } else {
+                current.subdirs.putIfAbsent(part, new DirectoryEntry(part, current));
+                current = current.subdirs.get(part);
+            }
         }
-        System.out.println("[OK] Diretório criado: " + path);
+        System.out.println("[OK] directory created: " + path);
     }
 
     public void createFile(String path) {
         int idx = path.lastIndexOf('/');
         String dirPath = path.substring(0, idx);
         String fileName = path.substring(idx + 1);
-        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "/" : dirPath);
+        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "." : dirPath);
         if (dir == null) {
-            System.out.println("Diretório não encontrado.");
+            System.out.println("error: directory not found.");
             return;
         }
         dir.files.put(fileName, new FileEntry(fileName));
-        System.out.println("[OK] Arquivo criado: " + path);
+        System.out.println("[OK] file created: " + path);
     }
 
     public void list(String path) {
         DirectoryEntry dir = getDirectory(path);
         if (dir == null) {
-            System.out.println("Diretório não encontrado.");
+            System.out.println("error: directory not found.");
             return;
         }
-
-        System.out.println("Conteúdo de " + path + ":");
+        System.out.println("Contents of " + dir.getFullPath() + ":");
         dir.subdirs.keySet().forEach(d -> System.out.println("[DIR]  " + d));
         dir.files.keySet().forEach(f -> System.out.println("[FILE] " + f));
     }
@@ -65,15 +80,15 @@ public class DirectoryEntry {
         int idx = path.lastIndexOf('/');
         String dirPath = path.substring(0, idx);
         String name = path.substring(idx + 1);
-        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "/" : dirPath);
+        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "." : dirPath);
         if (dir == null) {
-            System.out.println("Diretório não encontrado.");
+            System.out.println("error: directory not found.");
             return;
         }
         if (dir.files.remove(name) != null || dir.subdirs.remove(name) != null) {
-            System.out.println("[OK] Removido: " + path);
+            System.out.println("[OK] removed: " + path);
         } else {
-            System.out.println("Arquivo/diretório não encontrado.");
+            System.out.println("error: file or directory not found.");
         }
     }
 
@@ -81,9 +96,9 @@ public class DirectoryEntry {
         int idx = path.lastIndexOf('/');
         String dirPath = path.substring(0, idx);
         String name = path.substring(idx + 1);
-        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "/" : dirPath);
+        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "." : dirPath);
         if (dir == null) {
-            System.out.println("Diretório não encontrado.");
+            System.out.println("error: directory not found.");
             return;
         }
 
@@ -91,17 +106,37 @@ public class DirectoryEntry {
             FileEntry file = dir.files.remove(name);
             file.setName(newName);
             dir.files.put(newName, file);
-            System.out.println("[OK] Arquivo renomeado.");
+            System.out.println("[OK] file renamed.");
         } else if (dir.subdirs.containsKey(name)) {
             DirectoryEntry subdir = dir.subdirs.remove(name);
             dir.subdirs.put(newName, subdir);
-            System.out.println("[OK] Diretório renomeado.");
+            System.out.println("[OK] directory renamed.");
         } else {
-            System.out.println("Arquivo ou diretório não encontrado.");
+            System.out.println("error: file or directory not found.");
         }
     }
 
     public void copy(String sourcePath, String destPath) {
-        System.out.println("[Simulação] Copiado de " + sourcePath + " para " + destPath);
+        System.out.println("[SIM] copied from " + sourcePath + " to " + destPath);
+    }
+
+    public DirectoryEntry changeDirectory(String path) {
+        DirectoryEntry target = getDirectory(path);
+        if (target == null) {
+            System.err.println("cd: no such directory: " + path);
+            return null;
+        }
+        return target;
+    }
+
+    public String getFullPath() {
+        if (parent == null) return "/";
+        StringBuilder path = new StringBuilder();
+        DirectoryEntry current = this;
+        while (current.parent != null) {
+            path.insert(0, "/" + current.name);
+            current = current.parent;
+        }
+        return path.toString();
     }
 }
