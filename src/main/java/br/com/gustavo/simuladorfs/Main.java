@@ -51,6 +51,7 @@ public class Main {
         System.out.println("  cp <source> <dest>");
         System.out.println("  cd <path>");
         System.out.println("  pwd");
+        System.out.println("  cls <clears the screen>");
         System.out.println("  exit" + ANSI_RESET);
         System.out.println();
     }
@@ -63,7 +64,7 @@ public class Main {
         System.out.println(ANSI_RED + "[ERROR] " + msg + ANSI_RESET);
     }
 
-    private static void clearScreen() {
+    static void clearScreen() {
         try {
             String os = System.getProperty("os.name");
 

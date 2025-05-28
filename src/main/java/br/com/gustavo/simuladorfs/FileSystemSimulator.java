@@ -48,6 +48,7 @@ public class FileSystemSimulator {
                 }
             }
             case "pwd" -> System.out.println(current.getFullPath());
+            case "cls" -> Main.clearScreen();
             default -> System.err.println("error: unknown command");
         }
     }
