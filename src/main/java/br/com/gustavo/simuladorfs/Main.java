@@ -20,16 +20,19 @@ public class Main {
         while (true) {
             System.out.print(ANSI_BOLD + ANSI_CYAN + "MiniBSD > " + ANSI_RESET);
             String input = scanner.nextLine().trim();
+
             if (input.equalsIgnoreCase("exit")) {
                 printInfo("Shutting down. Goodbye.");
                 break;
             }
+
             try {
                 fs.processCommand(input);
             } catch (Exception e) {
                 printError("error: " + e.getMessage());
             }
         }
+
         scanner.close();
     }
 
@@ -50,7 +53,8 @@ public class Main {
         System.out.println("  pwd");
         System.out.println("  exit" + ANSI_RESET);
         System.out.println();
-}
+    }
+
     private static void printInfo(String msg) {
         System.out.println(ANSI_GREEN + "[INFO] " + msg + ANSI_RESET);
     }
@@ -61,13 +65,15 @@ public class Main {
 
     private static void clearScreen() {
         try {
-            final String os = System.getProperty("os.name");
+            String os = System.getProperty("os.name");
+
             if (os.contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

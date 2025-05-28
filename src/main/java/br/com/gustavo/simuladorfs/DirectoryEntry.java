@@ -24,31 +24,60 @@ public class DirectoryEntry {
 
     private DirectoryEntry getDirectory(String path) {
         String[] parts = path.split("/");
-        DirectoryEntry current = path.startsWith("/") ? getRoot() : this;
+        DirectoryEntry current;
+
+        if (path.startsWith("/")) {
+            current = getRoot();
+        } else {
+            current = this;
+        }
+
         for (String part : parts) {
             if (part.isEmpty() || part.equals(".")) continue;
+
             if (part.equals("..")) {
-                current = current.parent != null ? current.parent : current;
+                if (current.parent != null) {
+                    current = current.parent;
+                } else {
+                    current = current;
+                }
             } else {
                 current = current.subdirs.get(part);
             }
+
             if (current == null) return null;
         }
+
         return current;
     }
 
     public void createDirectory(String path) {
         String[] parts = path.split("/");
-        DirectoryEntry current = path.startsWith("/") ? getRoot() : this;
+        DirectoryEntry current;
+
+        if (path.startsWith("/")) {
+            current = getRoot();
+        } else {
+            current = this;
+        }
+
         for (String part : parts) {
             if (part.isEmpty() || part.equals(".")) continue;
+
             if (part.equals("..")) {
-                current = current.parent != null ? current.parent : current;
+                if (current.parent != null) {
+                    current = current.parent;
+                } else {
+                    current = current;
+                }
             } else {
-                current.subdirs.putIfAbsent(part, new DirectoryEntry(part, current));
+                if (!current.subdirs.containsKey(part)) {
+                    current.subdirs.put(part, new DirectoryEntry(part, current));
+                }
                 current = current.subdirs.get(part);
             }
         }
+
         System.out.println("[OK] directory created: " + path);
     }
 
@@ -56,35 +85,57 @@ public class DirectoryEntry {
         int idx = path.lastIndexOf('/');
         String dirPath = path.substring(0, idx);
         String fileName = path.substring(idx + 1);
-        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "." : dirPath);
+
+        DirectoryEntry dir;
+        if (dirPath.isEmpty()) {
+            dir = getDirectory(".");
+        } else {
+            dir = getDirectory(dirPath);
+        }
+
         if (dir == null) {
             System.out.println("error: directory not found.");
             return;
         }
+
         dir.files.put(fileName, new FileEntry(fileName));
         System.out.println("[OK] file created: " + path);
     }
 
     public void list(String path) {
         DirectoryEntry dir = getDirectory(path);
+
         if (dir == null) {
             System.out.println("error: directory not found.");
             return;
         }
+
         System.out.println("Contents of " + dir.getFullPath() + ":");
-        dir.subdirs.keySet().forEach(d -> System.out.println("[DIR]  " + d));
-        dir.files.keySet().forEach(f -> System.out.println("[FILE] " + f));
+        for (String d : dir.subdirs.keySet()) {
+            System.out.println("[DIR]  " + d);
+        }
+        for (String f : dir.files.keySet()) {
+            System.out.println("[FILE] " + f);
+        }
     }
 
     public void remove(String path) {
         int idx = path.lastIndexOf('/');
         String dirPath = path.substring(0, idx);
         String name = path.substring(idx + 1);
-        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "." : dirPath);
+
+        DirectoryEntry dir;
+        if (dirPath.isEmpty()) {
+            dir = getDirectory(".");
+        } else {
+            dir = getDirectory(dirPath);
+        }
+
         if (dir == null) {
             System.out.println("error: directory not found.");
             return;
         }
+
         if (dir.files.remove(name) != null || dir.subdirs.remove(name) != null) {
             System.out.println("[OK] removed: " + path);
         } else {
@@ -96,7 +147,14 @@ public class DirectoryEntry {
         int idx = path.lastIndexOf('/');
         String dirPath = path.substring(0, idx);
         String name = path.substring(idx + 1);
-        DirectoryEntry dir = getDirectory(dirPath.isEmpty() ? "." : dirPath);
+
+        DirectoryEntry dir;
+        if (dirPath.isEmpty()) {
+            dir = getDirectory(".");
+        } else {
+            dir = getDirectory(dirPath);
+        }
+
         if (dir == null) {
             System.out.println("error: directory not found.");
             return;
@@ -122,10 +180,12 @@ public class DirectoryEntry {
 
     public DirectoryEntry changeDirectory(String path) {
         DirectoryEntry target = getDirectory(path);
+
         if (target == null) {
             System.err.println("cd: no such directory: " + path);
             return null;
         }
+
         return target;
     }
 
@@ -133,10 +193,12 @@ public class DirectoryEntry {
         if (parent == null) return "/";
         StringBuilder path = new StringBuilder();
         DirectoryEntry current = this;
+
         while (current.parent != null) {
             path.insert(0, "/" + current.name);
             current = current.parent;
         }
+
         return path.toString();
     }
 }
