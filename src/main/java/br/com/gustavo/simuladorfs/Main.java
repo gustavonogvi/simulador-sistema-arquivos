@@ -1,4 +1,4 @@
-package br.com.gustavo.simulador-sistema-arquivos;
+package br.com.gustavo.simuladorfs;
 
 /**
  * Hello world!
