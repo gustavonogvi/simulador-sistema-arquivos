@@ -1,5 +1,6 @@
 package br.com.gustavo.simuladorfs;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,21 +41,16 @@ public class DirectoryEntry {
     }
 
     public void createDirectory(String path) {
-        String[] parts = path.split("/");
-        DirectoryEntry current = path.startsWith("/") ? getRoot() : this;
-
-        for (String part : parts) {
-            if (part.isEmpty() || part.equals(".")) continue;
-
-            if (part.equals("..")) {
-                if (current.parent != null) current = current.parent;
-            } else {
-                current.subdirs.putIfAbsent(part, new DirectoryEntry(part, current));
-                current = current.subdirs.get(part);
-            }
+        File dir = new File(FileSystemSimulator.ROOT_FOLDER, path.replace("/", File.separator));
+        if (dir.exists()) {
+            System.out.println("error: directory already exists.");
+            return;
         }
-
-        System.out.println("[OK] directory created: " + path);
+        if (dir.mkdirs()) {
+            System.out.println("[OK] directory created: " + String.format("%-40s", dir.getAbsolutePath()));
+        } else {
+            System.out.println("error: failed to create directory.");
+        }
     }
 
     public void createFile(String path) {
@@ -89,21 +85,29 @@ public class DirectoryEntry {
     }
 
     public void remove(String path) {
-        int idx = path.lastIndexOf('/');
-        String dirPath = idx == -1 ? "." : path.substring(0, idx);
-        String name = idx == -1 ? path : path.substring(idx + 1);
+        File target = new File(FileSystemSimulator.ROOT_FOLDER, path.replace("/", File.separator));
+  
 
-        DirectoryEntry dir = getDirectory(dirPath);
-        if (dir == null) {
-            System.out.println("error: directory not found.");
+        if (!target.exists()) {
+            System.out.println("error: file or directory not found.");
             return;
         }
 
-        if (dir.files.remove(name) != null || dir.subdirs.remove(name) != null) {
-            System.out.println("[OK] removed: " + path);
+        boolean deleted = deleteRecursive(target);
+
+        if (deleted) {
+            System.out.println("[OK] removed: " + target.getAbsolutePath());
         } else {
-            System.out.println("error: file or directory not found.");
+            System.out.println("error: failed to remove file or directory.");
         }
+    }
+    private boolean deleteRecursive(File file) {
+        if (file.isDirectory()) {
+            for (File child : file.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        return file.delete();
     }
 
     public void rename(String path, String newName) {
