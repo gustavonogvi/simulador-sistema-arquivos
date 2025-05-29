@@ -189,3 +189,5 @@ public class FileSystemSimulator {
         return relative.isBlank() ? "/" : relative;     
     }
 }
+//TODO: corrigr rm para que consiga deletar o diretorio mesmo estando dentro dele.
+//TODO: implementar o cp
