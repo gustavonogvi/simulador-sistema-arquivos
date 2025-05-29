@@ -38,31 +38,37 @@ public class FileSystemSimulator {
         String arg2 = parts.length > 2 ? parts[2] : null;
 
         switch (command) {
-            case "mkdir" -> mkdir(arg1);
-            case "touch" -> touch(arg1);
-            case "ls" -> ls(arg1);
-            case "rm" -> rm(arg1);
-            case "cd" -> cd(arg1);
-            case "pwd" -> System.out.println(getRelativePath(currentPath));
-            case "cls" -> Main.clearScreen();
-            case "man", "help" -> printHelp();
-            case "dmesg" -> System.out.println("[KERNEL] " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME) + " - boot ok");
-            case "sysctl" -> System.out.println("kern.ostype=MiniBSD\nkern.osrelease=1.0\nkern.hostname=localhost");
-            default -> System.err.println("Comando desconhecido. Digite 'help' para ver os comandos disponíveis.");
+            case "mkdir": mkdir(arg1); break;
+            case "touch": touch(arg1); break;
+            case "ls": ls(arg1); break;
+            case "rm": rm(arg1); break;
+            case "cd": cd(arg1); break;
+            case "pwd": System.out.println(getRelativePath(currentPath)); break;
+            case "cls": Main.clearScreen(); break;
+            case "man":
+            case "help": printHelp(); break;
+            case "dmesg":
+                System.out.println("[KERNEL] " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME) + " - sistema iniciado com sucesso");
+                break;
+            case "sysctl":
+                System.out.println("Sistema: MiniBSD\nVersão: 1.0\nNome da máquina: localhost");
+                break;
+            default:
+                System.err.println("Comando não reconhecido. Digite 'help' para ver os comandos disponíveis.");
         }
     }
 
     private void mkdir(String name) {
         if (name == null) {
-            System.err.println("Uso: mkdir <nome_da_pasta>");
+            System.err.println("Uso correto: mkdir <nome_da_pasta>");
             return;
         }
         try {
             Path dirPath = resolvePath(name);
             Files.createDirectories(dirPath);
-            System.out.println("✔ Diretório criado com sucesso: " + name);
+            System.out.println("Diretório criado com sucesso: " + name);
         } catch (FileAlreadyExistsException e) {
-            System.err.println("A pasta já existe.");
+            System.err.println("Essa pasta já existe.");
         } catch (IOException | SecurityException e) {
             System.err.println("Erro ao criar diretório: " + e.getMessage());
         }
@@ -70,14 +76,14 @@ public class FileSystemSimulator {
 
     private void touch(String name) {
         if (name == null) {
-            System.err.println("Uso: touch <nome_do_arquivo>");
+            System.err.println("Uso correto: touch <nome_do_arquivo>");
             return;
         }
         try {
             Path filePath = resolvePath(name);
             Files.createDirectories(filePath.getParent());
             Files.createFile(filePath);
-            System.out.println("✔ Arquivo criado: " + name);
+            System.out.println("Arquivo criado: " + name);
         } catch (FileAlreadyExistsException e) {
             System.err.println("Esse arquivo já existe.");
         } catch (IOException | SecurityException e) {
@@ -87,7 +93,7 @@ public class FileSystemSimulator {
 
     private void ls(String pathArg) {
         try {
-            Path path = resolvePath(pathArg != null ? pathArg : ".");
+            Path path = resolvePath((pathArg != null) ? pathArg : ".");
             if (Files.isDirectory(path)) {
                 System.out.println("Conteúdo de " + getRelativePath(path) + ":");
                 Files.list(path).map(p -> " - " + p.getFileName()).forEach(System.out::println);
@@ -101,7 +107,7 @@ public class FileSystemSimulator {
 
     private void rm(String name) {
         if (name == null) {
-            System.err.println("Uso: rm <arquivo_ou_pasta>");
+            System.err.println("Uso correto: rm <arquivo_ou_pasta>");
             return;
         }
         try {
@@ -119,7 +125,7 @@ public class FileSystemSimulator {
             } else {
                 Files.deleteIfExists(target);
             }
-            System.out.println("✔ Removido: " + name);
+            System.out.println("Removido: " + name);
         } catch (IOException | SecurityException e) {
             System.err.println("Erro ao remover: " + e.getMessage());
         }
@@ -127,26 +133,26 @@ public class FileSystemSimulator {
 
     private void cd(String dir) {
         if (dir == null) {
-            System.err.println("Uso: cd <caminho>");
+            System.err.println("Uso correto: cd <caminho>");
             return;
         }
         try {
             Path newPath = resolvePath(dir).normalize();
             if (Files.isDirectory(newPath)) {
                 currentPath = newPath;
-                System.out.println("✔ Agora em: " + getRelativePath(currentPath));
+                System.out.println("Agora você está em: " + getRelativePath(currentPath));
             } else {
                 System.err.println("Esse caminho não é um diretório.");
             }
         } catch (SecurityException e) {
-            System.err.println("Acesso negado.");
+            System.err.println("Acesso negado ao tentar mudar de diretório.");
         }
     }
 
     private Path resolvePath(String inputPath) {
         Path resolved = currentPath.resolve(inputPath).normalize();
         if (!resolved.startsWith(ROOT_FOLDER.toPath())) {
-            throw new SecurityException("Acesso negado: você não pode sair do diretório raiz do sistema.");
+            throw new SecurityException("Não é permitido sair do diretório raiz do sistema.");
         }
         return resolved;
     }
@@ -158,13 +164,13 @@ public class FileSystemSimulator {
                   touch <file>     - Criar um novo arquivo
                   ls [dir]         - Listar o conteúdo de uma pasta
                   rm <file|dir>    - Remover arquivo ou pasta
-                  cd <dir>         - Navegar para outro diretório
-                  pwd              - Mostrar caminho atual
+                  cd <dir>         - Ir para outro diretório
+                  pwd              - Mostrar o caminho atual
                   man | help       - Mostrar esta ajuda
-                  dmesg            - Mensagens do kernel
-                  sysctl           - Informações do sistema
+                  dmesg            - Mostrar mensagens do sistema
+                  sysctl           - Exibir informações do sistema
                   cls              - Limpar a tela
-                  exit             - Sair do MiniBSD
+                  exit             - Sair do sistema
                 """);
     }
 
