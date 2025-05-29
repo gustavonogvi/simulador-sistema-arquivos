@@ -12,10 +12,11 @@ import java.util.Comparator;
 public class FileSystemSimulator {
     public static final File ROOT_FOLDER = new File(System.getProperty("user.home"), ".miniBSD");
     private Path currentPath = ROOT_FOLDER.toPath();
-    private final Journal journal = new Journal();
+    private final Journal journal = new Journal();  
 
     public FileSystemSimulator() {
         BootManager.initialize(ROOT_FOLDER);
+        
     }
 
     public void startShell() {
@@ -112,6 +113,8 @@ public class FileSystemSimulator {
         }
         try {
             Path target = resolvePath(name);
+            boolean removendoDiretorioAtual = Files.isDirectory(target) && currentPath.equals(target.normalize());
+
             if (Files.isDirectory(target)) {
                 Files.walk(target)
                         .sorted(Comparator.reverseOrder())
@@ -125,11 +128,18 @@ public class FileSystemSimulator {
             } else {
                 Files.deleteIfExists(target);
             }
-            System.out.println("Removido: " + name);
+
+            if (removendoDiretorioAtual) {
+                currentPath = currentPath.getParent();
+                System.out.println("Diretório atual foi removido. Você foi movido para: " + getRelativePath(currentPath));
+            } else {
+                System.out.println("Removido: " + name);
+            }
         } catch (IOException | SecurityException e) {
             System.err.println("Erro ao remover: " + e.getMessage());
         }
     }
+
 
     private void cd(String dir) {
         if (dir == null) {
@@ -175,6 +185,7 @@ public class FileSystemSimulator {
     }
 
     private String getRelativePath(Path path) {
-        return path.toString().replace(ROOT_FOLDER.getAbsolutePath(), "");
+        String relative = path.toString().replace(ROOT_FOLDER.getAbsolutePath(), "");
+        return relative.isBlank() ? "/" : relative;     
     }
 }
