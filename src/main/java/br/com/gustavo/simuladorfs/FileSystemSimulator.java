@@ -43,45 +43,45 @@ public class FileSystemSimulator {
             case "ls" -> ls(arg1);
             case "rm" -> rm(arg1);
             case "cd" -> cd(arg1);
-            case "pwd" -> System.out.println(currentPath.toString().replace(ROOT_FOLDER.getAbsolutePath(), ""));
+            case "pwd" -> System.out.println(getRelativePath(currentPath));
             case "cls" -> Main.clearScreen();
             case "man", "help" -> printHelp();
             case "dmesg" -> System.out.println("[KERNEL] " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME) + " - boot ok");
             case "sysctl" -> System.out.println("kern.ostype=MiniBSD\nkern.osrelease=1.0\nkern.hostname=localhost");
-            default -> System.err.println("error: unknown command");
+            default -> System.err.println("Comando desconhecido. Digite 'help' para ver os comandos disponíveis.");
         }
     }
 
     private void mkdir(String name) {
         if (name == null) {
-            System.err.println("usage: mkdir <dir>");
+            System.err.println("Uso: mkdir <nome_da_pasta>");
             return;
         }
         try {
             Path dirPath = resolvePath(name);
             Files.createDirectories(dirPath);
-            System.out.println("[OK] directory created: " + name);
+            System.out.println("✔ Diretório criado com sucesso: " + name);
         } catch (FileAlreadyExistsException e) {
-            System.err.println("error: directory already exists.");
+            System.err.println("A pasta já existe.");
         } catch (IOException | SecurityException e) {
-            System.err.println("error: " + e.getMessage());
+            System.err.println("Erro ao criar diretório: " + e.getMessage());
         }
     }
 
     private void touch(String name) {
         if (name == null) {
-            System.err.println("usage: touch <file>");
+            System.err.println("Uso: touch <nome_do_arquivo>");
             return;
         }
         try {
             Path filePath = resolvePath(name);
             Files.createDirectories(filePath.getParent());
             Files.createFile(filePath);
-            System.out.println("[OK] file created: " + name);
+            System.out.println("✔ Arquivo criado: " + name);
         } catch (FileAlreadyExistsException e) {
-            System.err.println("error: file already exists.");
+            System.err.println("Esse arquivo já existe.");
         } catch (IOException | SecurityException e) {
-            System.err.println("error: " + e.getMessage());
+            System.err.println("Erro ao criar arquivo: " + e.getMessage());
         }
     }
 
@@ -89,19 +89,19 @@ public class FileSystemSimulator {
         try {
             Path path = resolvePath(pathArg != null ? pathArg : ".");
             if (Files.isDirectory(path)) {
-                System.out.println("Contents of " + currentPath.toString().replace(ROOT_FOLDER.getAbsolutePath(), "") + ":");
+                System.out.println("Conteúdo de " + getRelativePath(path) + ":");
                 Files.list(path).map(p -> " - " + p.getFileName()).forEach(System.out::println);
             } else {
-                System.err.println("error: not a directory.");
+                System.err.println("Isso não é um diretório.");
             }
         } catch (IOException | SecurityException e) {
-            System.err.println("error: " + e.getMessage());
+            System.err.println("Erro ao listar: " + e.getMessage());
         }
     }
 
     private void rm(String name) {
         if (name == null) {
-            System.err.println("usage: rm <file|dir>");
+            System.err.println("Uso: rm <arquivo_ou_pasta>");
             return;
         }
         try {
@@ -113,58 +113,62 @@ public class FileSystemSimulator {
                             try {
                                 Files.delete(p);
                             } catch (IOException e) {
-                                System.err.println("error deleting: " + p);
+                                System.err.println("Erro ao deletar: " + p);
                             }
                         });
             } else {
                 Files.deleteIfExists(target);
             }
-            System.out.println("[OK] removed: " + name);
+            System.out.println("✔ Removido: " + name);
         } catch (IOException | SecurityException e) {
-            System.err.println("error: " + e.getMessage());
+            System.err.println("Erro ao remover: " + e.getMessage());
         }
     }
 
     private void cd(String dir) {
         if (dir == null) {
-            System.err.println("usage: cd <path>");
+            System.err.println("Uso: cd <caminho>");
             return;
         }
         try {
             Path newPath = resolvePath(dir).normalize();
             if (Files.isDirectory(newPath)) {
                 currentPath = newPath;
-                System.out.println("[OK] changed directory to: " + currentPath.toString().replace(ROOT_FOLDER.getAbsolutePath(), ""));
+                System.out.println("✔ Agora em: " + getRelativePath(currentPath));
             } else {
-                System.err.println("error: not a directory.");
+                System.err.println("Esse caminho não é um diretório.");
             }
         } catch (SecurityException e) {
-            System.err.println("error: access denied.");
+            System.err.println("Acesso negado.");
         }
     }
 
     private Path resolvePath(String inputPath) {
         Path resolved = currentPath.resolve(inputPath).normalize();
         if (!resolved.startsWith(ROOT_FOLDER.toPath())) {
-            throw new SecurityException("Access denied: cannot escape the root directory.");
+            throw new SecurityException("Acesso negado: você não pode sair do diretório raiz do sistema.");
         }
         return resolved;
     }
 
     private void printHelp() {
         System.out.println("""
-                Available commands:
-                  mkdir <dir>      - Create a directory
-                  touch <file>     - Create a file
-                  ls [dir]         - List directory contents
-                  rm <file|dir>    - Remove file or directory
-                  cd <dir>         - Change directory
-                  pwd              - Show current path
-                  man | help       - Show help
-                  dmesg            - Kernel logs
-                  sysctl           - System info
-                  cls              - Clear screen
-                  exit             - Exit shell
+                Comandos disponíveis:
+                  mkdir <dir>      - Criar uma nova pasta
+                  touch <file>     - Criar um novo arquivo
+                  ls [dir]         - Listar o conteúdo de uma pasta
+                  rm <file|dir>    - Remover arquivo ou pasta
+                  cd <dir>         - Navegar para outro diretório
+                  pwd              - Mostrar caminho atual
+                  man | help       - Mostrar esta ajuda
+                  dmesg            - Mensagens do kernel
+                  sysctl           - Informações do sistema
+                  cls              - Limpar a tela
+                  exit             - Sair do MiniBSD
                 """);
+    }
+
+    private String getRelativePath(Path path) {
+        return path.toString().replace(ROOT_FOLDER.getAbsolutePath(), "");
     }
 }
