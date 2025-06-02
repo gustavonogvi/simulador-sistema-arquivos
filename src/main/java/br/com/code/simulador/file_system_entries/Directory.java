@@ -1,4 +1,4 @@
-package br.com.gustavo.simuladorfs.file_system_entries;
+package br.com.code.simulador.file_system_entries;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -6,7 +6,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import br.com.gustavo.simuladorfs.managers.PrintManager;
+import br.com.code.simulador.enums.OperationStatus;
+import br.com.code.simulador.managers.PrintManager;
 
 public class Directory extends FileSystemEntry {
 
@@ -40,29 +41,50 @@ public class Directory extends FileSystemEntry {
     }
 
     // Add a Directory to the subdirectories list
-    public boolean addSubDir(String name) {
+    public OperationStatus addSubDir(String name) {
         if (this.subDirectories.containsKey(name)) {
-            return false;
+            return OperationStatus.FAILED;
         }
 
         this.subDirectories.put(name, new Directory(name, this));
-        return true;
+        return OperationStatus.CREATED;
+    }
+
+    public OperationStatus removeSubDir(String name) {
+        Directory dir = this.subDirectories.remove(name);
+
+        if (dir != null) {
+            return OperationStatus.DELETED;
+        } else {
+            return OperationStatus.FAILED;
+        }
     }
 
     // Add a file to the subdirectories list.
     // If the file already exists, update lastWriteTime
-    public void addFile(File file) {
-        File innerFile = this.files.get(file.getName());
+    public OperationStatus addFile(String name) {
+        File innerFile = this.files.get(name);
 
         if (innerFile != null) {
-            file.setLastWriteTime(getCurrentTimestamp());
-        } else {
-            this.files.put(file.getName(), file);
+            innerFile.setLastWriteTime(getCurrentTimestamp());
+            return OperationStatus.UPDATED;
         }
+
+        File file = new File(name, this);
+        this.files.put(name, file);
+
+        return OperationStatus.CREATED;
     }
 
-    public void removeFile(String name) {
+    // Remover a file from files list
+    public OperationStatus removeFile(String name) {
+        File file = this.files.remove(name);
 
+        if (file != null) {
+            return OperationStatus.DELETED;
+        } else {
+            return OperationStatus.FAILED;
+        }
     }
 
     public void rename(String path, String newName) {

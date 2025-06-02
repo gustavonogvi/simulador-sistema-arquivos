@@ -1,0 +1,10 @@
+Hora                 Comando   Status     Path       Info       
+----                 -------   ----       -----      ----       
+02/06/2025  17:12    cd        FAILED     root/      diretório não axiste
+02/06/2025  17:12    mkdir     CREATED    root/1     diretório criado
+02/06/2025  17:12    ls        SUCCESS    root/      listagem da pasta
+02/06/2025  17:13    ls        SUCCESS    root/      listagem da pasta
+02/06/2025  17:16    touch     CREATED    root/casa  arquivo criado
+02/06/2025  17:16    ls        SUCCESS    root/      listagem da pasta
+02/06/2025  17:17    ls        SUCCESS    root/      listagem da pasta
+02/06/2025  17:18    cls       SUCCESS               terminal limpo

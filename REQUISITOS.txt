@@ -1,0 +1,62 @@
+
+Legenda
+  ❌ - Não implementado
+  ⚠️ - Implementado, mas não testado
+  ✔️ - Implementado e testado
+
+* ls - Listar arquivos:
+    Requisitos:
+      ✔️ ls
+      ❌ la path/ 
+
+* cd - Navegar:
+    Requisitos:
+      ✔️ cd nome_da_pasta
+      ✔️ cd ..
+      ❌ cd path 
+
+* mkdir - Criar diretórios:
+    Requisitos:
+      ✔️ mkdir pasta
+      ❌ mkdir "nova pasta"
+      ❌ mkdir pasta1 pasta2 pasta3
+      ❌ mkdir -p pai/filho/neto 
+
+* touch - Criar arquivo:
+    Requisitos:
+      ⚠️ touch name
+      ❌ touch a.txt b.txt c.txt ❌
+      ❌ touch README ❌
+      ❌ touch "arquivo com espaço.txt" ❌
+
+* rm - Remover arquivo:
+    Requisitos:
+      ⚠️ rm nome_arquivo
+      ❌ rm path
+
+* rm - Remover diretório:
+    Requisitos:
+      ⚠️ rm -r nome_diretório
+      ❌ rm -r path
+
+* mv - Remover arquivo:
+    Requisitos:
+      ❌ mv nome_antigo.txt novo_nome.txt
+
+* mv - Remover diretório:
+    Requisitos:
+      ❌ mv nome_antigo.txt novo_nome.txt
+
+* cp - Copiar arquivo:
+    Requisitos:
+      ❌ cp arquivo.txt copia.txt
+      ❌ cp arquivo.txt path
+
+* cp - Remover diretório:
+    Requisitos:
+      ❌ cp -r diretório diretório_copia.txt
+      ❌ cp -r diretório path
+
+* cls, clear - Limpar terminal:
+    Requisitos:
+      ✔️ cls

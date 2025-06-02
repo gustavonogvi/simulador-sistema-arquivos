@@ -1,4 +1,4 @@
-package br.com.gustavo.simuladorfs.managers;
+package br.com.code.simulador.managers;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import br.com.gustavo.simuladorfs.file_system_entries.Directory;
+import br.com.code.simulador.file_system_entries.Directory;
 
 public class PersistanceManager {
 
@@ -16,7 +16,7 @@ public class PersistanceManager {
             oos.writeObject(root);
             return true;
         } catch (IOException e) {
-            PrintManager.printError("Não foi possível salvar o diretório raiz (root)");
+            PrintManager.printError("Não foi possível salvar o diretório raiz (root)", "PersistanceManager.save()");
             return false;
         }
     }

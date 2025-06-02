@@ -1,9 +1,9 @@
-package br.com.gustavo.simuladorfs.managers;
+package br.com.code.simulador.managers;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import br.com.gustavo.simuladorfs.file_system_entries.FileSystemEntry;
+import br.com.code.simulador.file_system_entries.FileSystemEntry;
 
 public class PrintManager {
 
@@ -23,7 +23,7 @@ public class PrintManager {
         System.out.println(ANSI_YELLOW + "[INFO] " + msg + ANSI_RESET);
     }
 
-    public static void printError(String msg) {
+    public static void printError(String msg, String origen) {
         System.out.println(ANSI_RED + "[ERROR] " + msg + ANSI_RESET);
     }
 

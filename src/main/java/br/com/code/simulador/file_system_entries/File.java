@@ -1,4 +1,4 @@
-package br.com.gustavo.simuladorfs.file_system_entries;
+package br.com.code.simulador.file_system_entries;
 
 public class File extends FileSystemEntry {
 

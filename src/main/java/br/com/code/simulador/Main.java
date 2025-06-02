@@ -1,8 +1,8 @@
-package br.com.gustavo.simuladorfs;
+package br.com.code.simulador;
 
 import java.util.Scanner;
 
-import br.com.gustavo.simuladorfs.managers.PrintManager;
+import br.com.code.simulador.managers.PrintManager;
 
 public class Main {
 
@@ -29,7 +29,7 @@ public class Main {
             try {
                 fs.processCommand(input);
             } catch (Exception e) {
-                PrintManager.printError("error: " + e.getMessage());
+                PrintManager.printError("error!!!!: " + e.getMessage(), "Main.main()");
             }
         }
 
