@@ -1,0 +1,11 @@
+- Operações a serem implementadas:
+
+  - [testar] Criar arquivos
+  - [ ] Copiar arquivos
+  - [ ] Apagar arquivos
+  - [ ] Renomear arquivos
+  - [testar] Criar diretórios
+  - [ ] Apagar diretórios
+  - [ ] Renomear diretórios
+  - [ ] Listar arquivos de um diretório
+  - [ ] Navegar
