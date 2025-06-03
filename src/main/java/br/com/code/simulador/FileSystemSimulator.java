@@ -30,6 +30,8 @@ public class FileSystemSimulator {
     public static final String createDirCmd = "mkd";
     public static final String removeDirCmd = "rmd";
     public static final String renameDirCmd = "rnd";
+    public static final String moveCmd = "mv";
+
 
     // Initialize the File System
     public void init() {
@@ -63,6 +65,47 @@ public class FileSystemSimulator {
         return this.currentDir.getPath();
     }
 
+    public void move(String sourcePath, String destPath) {
+    FileSystemEntry sourceEntry = resolvePath(sourcePath);
+    if (sourceEntry == null) {
+        System.out.println("mv: origem não encontrada.");
+        return;
+    }
+
+    Directory sourceParent = sourceEntry.getParent();
+    if (sourceParent == null) {
+        System.out.println("mv: não é possível mover o diretório raiz.");
+        return;
+    }
+
+    Directory destDir = resolveDirectory(destPath);
+    if (destDir == null) {
+        System.out.println("mv: destino não encontrado ou não é um diretório.");
+        return;
+    }
+
+    String name = sourceEntry.getName();
+
+    // Verifica se já existe algo com o mesmo nome no destino
+    if ((sourceEntry instanceof File && destDir.hasFile(name)) ||
+        (sourceEntry instanceof Directory && destDir.hasDir(name))) {
+        System.out.println("mv: já existe um item com esse nome no destino.");
+        return;
+    }
+
+    // Remove da origem
+    if (sourceEntry instanceof File) {
+        sourceParent.removeFile(name);
+        destDir.addFile((File) sourceEntry);
+    } else {
+        sourceParent.removeDir(name);
+        destDir.addDir((Directory) sourceEntry);
+    }
+
+    sourceEntry.parent = destDir;
+
+    System.out.println("mv: item movido com sucesso.");
+}
     //
     private void clearTerminal(String comandName) {
         PrintManager.clearTerminal();
@@ -141,6 +184,37 @@ public class FileSystemSimulator {
         }
     }
 
+         private FileSystemEntry resolvePath(String path) {
+        if (path == null || path.isBlank()) return null;
+
+        Directory current = path.startsWith("/") ? root : currentDir;
+
+        String[] parts = path.replaceAll("^/+", "").split("/");
+
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+
+            if (i == parts.length - 1) {
+                // Último elemento: pode ser diretório ou arquivo
+                if (current.hasDir(part)) return current.getDir(part);
+                if (current.hasFile(part)) return current.getFile(part);
+                return null;
+            }
+
+            if (current.hasDir(part)) {
+                current = current.getDir(part);
+            } else {
+                return null;
+            }
+        }
+
+        return current;
+    }
+
+    private Directory resolveDirectory(String path) {
+        FileSystemEntry entry = resolvePath(path);
+        return (entry instanceof Directory) ? (Directory) entry : null;
+    }
     // Listar arquivos de um diretório
     private void listDirectories(List<String> args, String commandName) {
         if (args.size() != 0) {
@@ -152,6 +226,44 @@ public class FileSystemSimulator {
         PrintManager.printDirectoryContent(getCurrentPath(), sortedEntries);
         Journal.writeLine(commandName, getTargetPath(""), OperationStatus.SUCCESS, "listagem da pasta");
     }
+private void moveEntry(List<String> args, String command) {
+    if (args.size() < 2) {
+        System.out.println("Uso: mv <origem> <destino>");
+        return;
+    }
+
+    String origemPath = args.get(0);
+    String destinoPath = args.get(1);
+
+    FileSystemEntry origem = resolvePath(origemPath);
+    Directory destino = resolveDirectory(destinoPath);
+
+    if (origem == null) {
+        System.out.println("Erro: entrada de origem não encontrada.");
+        return;
+    }
+
+    if (destino == null) {
+        System.out.println("Erro: diretório de destino não encontrado.");
+        return;
+    }
+
+    origem.getParent().removeFile(origem.getName());
+
+    if (origem instanceof File) {
+        destino.addFile((File) origem);
+        System.out.println("Arquivo movido com sucesso.");
+    } else if (origem instanceof Directory) {
+        origem.getParent().removeDir(origem.getName());
+        destino.addDir((Directory) origem);
+        System.out.println("Diretório movido com sucesso.");
+    } else {
+        System.out.println("Tipo de entrada desconhecido.");
+    }
+
+    origem.getParent().removeFile(origem.getName());
+    origem.updateLastWriteTime();
+}
 
     // Navegar entre diretórios
     private void navigate(List<String> args, String commandName) {
@@ -341,6 +453,9 @@ public class FileSystemSimulator {
             case removeDirCmd: // Remove directory
                 removeEntry(args, removeDirCmd, false);
                 break;
+            case moveCmd:
+                moveEntry(args, moveCmd);
+                break;    
             case createFileCmd: // Create file
                 createFile(args, createFileCmd);
                 break;

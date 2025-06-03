@@ -1,7 +1,6 @@
 package br.com.code.simulador.file_system_entries;
 
 import java.io.Serializable;
-import java.security.KeyStore.Entry;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -10,7 +9,7 @@ import br.com.code.simulador.utils.Utils;
 
 public abstract class FileSystemEntry implements Serializable {
     protected String name;
-    protected Directory parent;
+    public Directory parent;
     protected EntryType type;
     protected int length;
 
@@ -65,7 +64,7 @@ public abstract class FileSystemEntry implements Serializable {
     // Easier to call recursively than to modify the path
     public String getPath() {
         if (this.parent == null) {
-            return "root";
+            return "root/";
         }
 
         return parent.getPath() + this.name + "/";

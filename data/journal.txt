@@ -1,0 +1,32 @@
+Hora                 Comando   Status     Path       Info       
+----                 -------   ----       -----      ----       
+03/06/2025  15:12    ls        success    root/      listagem da pasta
+03/06/2025  15:13    mkd       created    root/test  diretório criado
+03/06/2025  15:13    ls        success    root/      listagem da pasta
+03/06/2025  15:13    cls       success               terminal limpo
+03/06/2025  15:13    mkd       created    root/test2 diretório criado
+03/06/2025  15:13    ls        success    root/      listagem da pasta
+03/06/2025  15:15    cd        success    roottest// navegação com sucesso
+03/06/2025  15:15    ls        success    roottest// listagem da pasta
+03/06/2025  15:15    cls       success               terminal limpo
+03/06/2025  15:15    cls       success               terminal limpo
+03/06/2025  15:15    cls       success               terminal limpo
+03/06/2025  15:15    cls       success               terminal limpo
+03/06/2025  15:15    cd        success    root/      navegação com sucesso
+03/06/2025  15:15    ls        success    root/      listagem da pasta
+03/06/2025  15:15    cls       success               terminal limpo
+03/06/2025  15:15    ls        success    root/      listagem da pasta
+03/06/2025  15:16    ls        success    root/      listagem da pasta
+03/06/2025  15:16    cls       success               terminal limpo
+03/06/2025  15:16    cd        success    roottest// navegação com sucesso
+03/06/2025  15:18    cls       success               terminal limpo
+03/06/2025  15:18    mkf       created    roottest//arquivo.txt arquivo criado
+03/06/2025  15:18    ls        success    roottest// listagem da pasta
+03/06/2025  15:18    cd        success    root/      navegação com sucesso
+03/06/2025  15:18    cls       success               terminal limpo
+03/06/2025  15:18    cd        success    roottest2// navegação com sucesso
+03/06/2025  15:18    ls        success    roottest2// listagem da pasta
+03/06/2025  15:22    ls        success    root//     listagem da pasta
+03/06/2025  15:22    cd        success    root/test// navegação com sucesso
+03/06/2025  15:22    ls        success    root/test// listagem da pasta
+03/06/2025  15:22    cls       success               terminal limpo

@@ -31,6 +31,9 @@ public class Directory extends FileSystemEntry {
     public Directory getDir(String name) {
         return this.directories.get(name);
     }
+    public File getFile(String name) {
+    return this.files.get(name);
+}
 
     //
     public boolean hasDir(String name) {
