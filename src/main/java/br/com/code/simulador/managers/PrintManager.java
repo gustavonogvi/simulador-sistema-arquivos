@@ -32,11 +32,11 @@ public class PrintManager {
     // order, starting with the subdirectories, then the files
     public static void printDirectoryContent(String path, List<FileSystemEntry> sortedEntries) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy  HH:mm");
-        int modeColumnWidth = 14;
+        int typeColumnWidth = 10;
         int timeColumnWidth = 20;
         int lengthColumnWidth = 10;
 
-        String format = "%-" + modeColumnWidth +
+        String format = "%-" + typeColumnWidth +
                 "s %" + timeColumnWidth +
                 "s %" + lengthColumnWidth +
                 "s  %s%n";

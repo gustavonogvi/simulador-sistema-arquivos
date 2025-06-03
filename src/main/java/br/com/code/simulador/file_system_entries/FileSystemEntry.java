@@ -87,6 +87,10 @@ public abstract class FileSystemEntry implements Serializable {
         this.lastWriteTime = time;
     }
 
+    public void updateLastWriteTime() {
+        this.lastWriteTime = getCurrentTimestamp();
+    }
+
     // TODO: Better put on Utils.java?
     protected Timestamp getCurrentTimestamp() {
         Date dataAtual = new Date();

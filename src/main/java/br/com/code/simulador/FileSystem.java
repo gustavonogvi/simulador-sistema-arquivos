@@ -16,18 +16,18 @@ public class FileSystem {
     private Directory root;
     private Directory currentDir;
 
-    public static final String clearTerminalCmd = "ct";
+    public static final String clearTerminalCmd = "cls";
     public static final String navigationCmd = "cd";
     public static final String listCmd = "ls";
     public static final String helpCmd = "help";
 
     public static final String copyFileCmd = "cpf";
-    public static final String createFileCmd = "mf";
+    public static final String createFileCmd = "mkf";
     public static final String removeFileCmd = "rmf";
     public static final String renameFileCmd = "rnf";
 
     public static final String copyDirCmd = "cpd";
-    public static final String createDirCmd = "md";
+    public static final String createDirCmd = "mkd";
     public static final String removeDirCmd = "rmd";
     public static final String renameDirCmd = "rnd";
 
@@ -226,6 +226,8 @@ public class FileSystem {
         String oldName = args.get(0);
         String newName = args.get(1);
         String formatedNewName = Utils.removeInvalidChars(newName);
+        boolean hasFormatedEntry;
+        FileSystemEntry entry;
 
         if (formatedNewName == null || formatedNewName.isBlank()) {
             Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.FAILED,
@@ -233,23 +235,6 @@ public class FileSystem {
             PrintManager.printInfo("Novo nome inválido");
             return;
         }
-
-        FileSystemEntry entry;
-
-        if (isFile) {
-            entry = this.currentDir.removeFile(oldName);
-        } else {
-            entry = this.currentDir.removeDir(oldName);
-        }
-
-        if (entry == null) {
-            Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.FAILED,
-                    "não existe " + prefix + " com nome: " + oldName);
-            PrintManager.printInfo(prefix + " com nome " + oldName + " não existe");
-            return;
-        }
-
-        boolean hasFormatedEntry;
 
         if (isFile) {
             hasFormatedEntry = this.currentDir.hasFile(formatedNewName);
@@ -261,6 +246,19 @@ public class FileSystem {
             Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.FAILED,
                     prefix + " com " + formatedNewName + " já existe");
             PrintManager.printInfo(prefix + " com " + formatedNewName + " já existe");
+            return;
+        }
+
+        if (isFile) {
+            entry = this.currentDir.removeFile(oldName);
+        } else {
+            entry = this.currentDir.removeDir(oldName);
+        }
+
+        if (entry == null) {
+            Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.FAILED,
+                    "não existe " + prefix + " com nome: " + oldName);
+            PrintManager.printInfo(prefix + " com nome " + oldName + " não existe");
             return;
         }
 
@@ -290,8 +288,8 @@ public class FileSystem {
     private void printHelp() {
         System.out.println("""
                                 Comandos disponíveis:
-                    md <dir> _________________ Criar uma nova pasta
-                    mf <file> ________________ Criar um novo arquivo
+                    mkd <dir> ________________ Criar uma nova pasta
+                    mkf <file> _______________ Criar um novo arquivo
                     ls _______________________ Listar o conteúdo de uma pasta
                     rmf <nome_arquvio> _______ Remover um arquivo
                     rmd <nome_dir> ___________ Remover uma pasta
@@ -300,7 +298,7 @@ public class FileSystem {
                     help _____________________ Mostrar esta ajuda
                     dmesg ____________________ Mostrar mensagens do sistema
                     sysctl ___________________ Exibir informações do sistema
-                    ct _______________________ Limpar a tela
+                    cls ______________________ Limpar o terminal
                     cpf <velho> <novo> _______ Copiar um arquivo
                     cpd <velho> <novo> _______ Copiar uma pasta
                     rnf <velho> <novo> _______ Renomear um arquivo

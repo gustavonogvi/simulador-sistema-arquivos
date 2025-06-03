@@ -115,3 +115,77 @@ Hora                 Comando   Status     Path       Info
 03/06/2025  10:51    ls        success    root/      listagem da pasta
 03/06/2025  10:51    mf        created    root/p     arquivo criado
 03/06/2025  10:51    ls        success    root/      listagem da pasta
+03/06/2025  10:57    mkf       created    root/arquivo arquivo criado
+03/06/2025  10:57    ls        success    root/      listagem da pasta
+03/06/2025  10:57    mkf       updated    root/arquivo timestamp atualizado
+03/06/2025  10:58    ls        success    root/      listagem da pasta
+03/06/2025  10:58    mkf       updated    root/arquivo timestamp atualizado
+03/06/2025  10:58    ls        success    root/      listagem da pasta
+03/06/2025  10:58    mkf       created    root/teste arquivo criado
+03/06/2025  10:58    ls        success    root/      listagem da pasta
+03/06/2025  10:58    cd        failed     root/      diretório não axiste
+03/06/2025  10:58    ls        success    root/      listagem da pasta
+03/06/2025  10:59    rmf       success    root/teste arquivo removido
+03/06/2025  10:59    ls        success    root/      listagem da pasta
+03/06/2025  10:59    rmf       failed     root/teste falha ao remover arquivo
+03/06/2025  10:59    rmf       success    root/arquivo arquivo removido
+03/06/2025  10:59    rmf       failed     root/root  falha ao remover arquivo
+03/06/2025  10:59    rmf       failed     root/arquivo falha ao remover arquivo
+03/06/2025  10:59    ls        success    root/      listagem da pasta
+03/06/2025  10:59    mkf       created    root/fike  arquivo criado
+03/06/2025  10:59    ls        success    root/      listagem da pasta
+03/06/2025  10:59    cd        failed     root/      diretório não axiste
+03/06/2025  11:00    rmf       success    root/fike  arquivo removido
+03/06/2025  11:00    ls        success    root/      listagem da pasta
+03/06/2025  11:00    mkd       created    root/dir   diretório criado
+03/06/2025  11:00    ls        success    root/      listagem da pasta
+03/06/2025  11:00    rmd       success    root/dir   diretório removido
+03/06/2025  11:00    ls        success    root/      listagem da pasta
+03/06/2025  11:00    rmd       failed     root/dir   falha ao remover diretório
+03/06/2025  11:00    mkd       created    root/r     diretório criado
+03/06/2025  11:00    ls        success    root/      listagem da pasta
+03/06/2025  11:00    mkd       created    root/a     diretório criado
+03/06/2025  11:00    ls        success    root/      listagem da pasta
+03/06/2025  11:01    rmd       success    root/a     diretório removido
+03/06/2025  11:01    rmd       success    root/r     diretório removido
+03/06/2025  11:01    ls        success    root/      listagem da pasta
+03/06/2025  11:01    mkf       created    root/file_1 arquivo criado
+03/06/2025  11:02    mkf       created    root/file_2 arquivo criado
+03/06/2025  11:02    ls        success    root/      listagem da pasta
+03/06/2025  11:02    rnf       failed     root/file_1 arquivo com file_2 já existe
+03/06/2025  11:02    rnf       failed     root/file_1 não existe arquivo com nome: file_1
+03/06/2025  11:02    rnf       failed     root/file_1 não existe arquivo com nome: file_1
+03/06/2025  11:02    ls        success    root/      listagem da pasta
+03/06/2025  11:03    mkf       created    root/file  arquivo criado
+03/06/2025  11:03    ls        success    root/      listagem da pasta
+03/06/2025  11:03    rnf       failed     root/file  arquivo com file_2 já existe
+03/06/2025  11:03    ls        success    root/      listagem da pasta
+03/06/2025  11:07    mkf       created    root/casa  arquivo criado
+03/06/2025  11:07    ls        success    root/      listagem da pasta
+03/06/2025  11:07    rnf       failed     root/casa  arquivo com casa já existe
+03/06/2025  11:07    ls        success    root/      listagem da pasta
+03/06/2025  11:07    ls        success    root/      listagem da pasta
+03/06/2025  11:08    ls        success    root/      listagem da pasta
+03/06/2025  11:08    rnf       failed     root/xuxa  novo nome inválido: /
+03/06/2025  11:08    rnf       failed     root/xuxa  arquivo com xuxa já existe
+03/06/2025  11:08    ls        success    root/      listagem da pasta
+03/06/2025  11:11    ls        success    root/      listagem da pasta
+03/06/2025  11:11    mkf       created    root/file  arquivo criado
+03/06/2025  11:11    mkd       created    root/dir   diretório criado
+03/06/2025  11:11    ls        success    root/      listagem da pasta
+03/06/2025  11:12    ls        success    root/      listagem da pasta
+03/06/2025  11:12    ls        success    root/      listagem da pasta
+03/06/2025  11:12    rnd       failed     root/dir   diretório com dir já existe
+03/06/2025  11:12    ls        success    root/      listagem da pasta
+03/06/2025  11:13    ls        success    root/      listagem da pasta
+03/06/2025  11:13    ls        success    root/      listagem da pasta
+03/06/2025  11:13    ls        success    root/      listagem da pasta
+03/06/2025  11:14    ls        success    root/      listagem da pasta
+03/06/2025  11:14    mkd       created    root/dir   diretório criado
+03/06/2025  11:14    ls        success    root/      listagem da pasta
+03/06/2025  11:14    mkf       created    root/f     arquivo criado
+03/06/2025  11:14    ls        success    root/      listagem da pasta
+03/06/2025  11:14    mkf       created    root/a     arquivo criado
+03/06/2025  11:14    ls        success    root/      listagem da pasta
+03/06/2025  11:14    mkf       created    root/1     arquivo criado
+03/06/2025  11:14    ls        success    root/      listagem da pasta

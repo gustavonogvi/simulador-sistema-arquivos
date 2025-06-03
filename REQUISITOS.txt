@@ -15,48 +15,48 @@ Legenda
       ✔️ cd ..
       ❌ cd path 
 
-* mkdir - Criar diretórios:
+* mkd - Criar diretórios:
     Requisitos:
       ✔️ mkdir pasta
       ❌ mkdir "nova pasta"
       ❌ mkdir pasta1 pasta2 pasta3
       ❌ mkdir -p pai/filho/neto 
 
-* touch - Criar arquivo:
+* mkf - Criar arquivo:
     Requisitos:
-      ⚠️ touch name
-      ❌ touch a.txt b.txt c.txt ❌
-      ❌ touch README ❌
-      ❌ touch "arquivo com espaço.txt" ❌
+      ✔️ mkf name
+      ❌ mkf a.txt b.txt c.txt ❌
+      ❌ mkf README ❌
+      ❌ mkf "arquivo com espaço.txt" ❌
 
-* rm - Remover arquivo:
+* rmf - Remover arquivo:
     Requisitos:
-      ⚠️ rmf nome_arquivo
+      ✔️ rmf nome_arquivo
       ❌ rmf path
 
-* rm - Remover diretório:
+* rmd - Remover diretório:
     Requisitos:
-      ⚠️ rmd  nome_diretório
+      ✔️ rmd  nome_diretório
       ❌ rmd path
 
-* mv - Renomear arquivo:
+* rnf - Renomear arquivo:
     Requisitos:
-      ⚠️ rnf nome_antigo.txt novo_nome.txt
+      ✔️ rnf nome_antigo.txt novo_nome.txt
 
-* mv - Renomear diretório:
+* rnd - Renomear diretório:
     Requisitos:
-      ⚠️ rnd nome_antigo novo_nome
+      ✔️ rnd nome_antigo novo_nome
 
-* cp - Copiar arquivo:
+* cpf - Copiar arquivo:
     Requisitos:
       ❌ cpf arquivo.txt copia.txt
       ❌ cpf arquivo.txt path
 
-* cp - Copiar diretório:
+* cpd - Copiar diretório:
     Requisitos:
       ❌ cpd -r diretório diretório_copia.txt
       ❌ cpd -r diretório path
 
-* cls, clear - Limpar terminal:
+* cls - Limpar terminal:
     Requisitos:
       ✔️ cls
