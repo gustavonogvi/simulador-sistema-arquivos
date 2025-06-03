@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.code.simulador.enums.OperationStatus;
-import br.com.code.simulador.file_system_entries.Directory;
 import br.com.code.simulador.managers.PrintManager;
 
 public class Journal {
@@ -72,7 +71,7 @@ public class Journal {
                 "-".repeat(5),
                 "-".repeat(4));
 
-        String line = String.format(lineformat, timestamp, command, status.name(), targetPath, extaInfo);
+        String line = String.format(lineformat, timestamp, command, status.name(), targetPath, extaInfo).toLowerCase();
 
         if (!fileExists()) {
             writeLine(header);

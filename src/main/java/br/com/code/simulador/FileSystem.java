@@ -4,16 +4,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.code.simulador.constants.Constants;
 import br.com.code.simulador.enums.OperationStatus;
 import br.com.code.simulador.file_system_entries.Directory;
+import br.com.code.simulador.file_system_entries.File;
 import br.com.code.simulador.file_system_entries.FileSystemEntry;
 import br.com.code.simulador.managers.PersistanceManager;
 import br.com.code.simulador.managers.PrintManager;
+import br.com.code.simulador.utils.Utils;
 
 public class FileSystem {
     private Directory root;
     private Directory currentDir;
+
+    public static final String clearTerminalCmd = "cls";
+    public static final String navigationCmd = "cd";
+    public static final String listCmd = "ls";
+    public static final String helpCmd = "help";
+
+    public static final String copyFileCmd = "cpf";
+    public static final String createFileCmd = "cf";
+    public static final String removeFileCmd = "rmf";
+    public static final String renameFileCmd = "rnf";
+
+    public static final String copyDirCmd = "cpd";
+    public static final String createDirCmd = "mkdir";
+    public static final String removeDirCmd = "rmd";
+    public static final String renameDirCmd = "rnd";
 
     // Initialize the File System
     public void init() {
@@ -55,18 +71,18 @@ public class FileSystem {
 
     // TODO:
     // Copy files - command: cp <origen> <destiny>
-    private void copyDirectory(String name) {
-        if (name == null) {
-            PrintManager.printInfo("Uso correto: rm <arquivo_ou_pasta>");
+    private void copyDirectory(List<String> args, String commandName) {
+        if (args == null) {
+            PrintManager.printInfo("Uso correto: " + commandName + "<arquivo_ou_pasta>");
             return;
         }
     }
 
     // TODO:
     // Copy files - command: cp <origen> <destiny>
-    private void copyFile(String name) {
-        if (name == null) {
-            PrintManager.printInfo("Uso correto: rm <arquivo_ou_pasta>");
+    private void copyFile(List<String> args, String commandName) {
+        if (args == null) {
+            PrintManager.printInfo("Uso correto: " + commandName + "<arquivo_ou_pasta>");
             return;
         }
     }
@@ -74,7 +90,7 @@ public class FileSystem {
     // Create file - command: touch <file>
     private void createFile(List<String> args, String commandName) {
         if (args == null || args.isEmpty()) {
-            PrintManager.printInfo("Uso correto: touch <nome_do_arquivo.extensão>");
+            PrintManager.printInfo("Uso correto: " + commandName + "<nome_do_arquivo.extensão>");
             return;
         }
 
@@ -101,18 +117,17 @@ public class FileSystem {
     private void createSubDirectory(List<String> args, String commandName) {
 
         if (args == null || args.isEmpty()) {
-            PrintManager.printInfo("Uso correto: mkdir <nome_da_pasta>");
+            PrintManager.printInfo("Uso correto: " + commandName + "<nome_da_pasta>");
             return;
         }
 
-        // TODO: Remove when aceppt more than one argument
         if (args.size() > 1) {
             PrintManager.printInfo("No momento o comando aceita apenas um nome diretório");
             return;
         }
 
-        String name = args.get(0).replaceAll(Constants.prohibitedCharacters, "");
-        OperationStatus status = this.currentDir.addSubDir(name);
+        String name = args.get(0);
+        OperationStatus status = this.currentDir.addDir(name);
 
         if (status == OperationStatus.FAILED) {
             PrintManager.printInfo("mkdir: Não foi possível criar o diretório " + name + ": o arquivo já existe");
@@ -141,7 +156,7 @@ public class FileSystem {
     // Navegar entre diretórios
     private void navigate(List<String> args, String commandName) {
         if (args == null || args.isEmpty()) {
-            PrintManager.printInfo("Uso correto: cd <nome_diretório> ou cs ..");
+            PrintManager.printInfo("Uso correto: " + commandName + "<nome_diretório> ou cs ..");
             return;
         }
         if (args.size() > 2 || args.get(0).isBlank()) {
@@ -161,7 +176,7 @@ public class FileSystem {
             return;
         }
 
-        Directory dir = currentDir.getSubDirectory(arg);
+        Directory dir = currentDir.getDir(arg);
 
         if (dir != null) {
             this.currentDir = dir;
@@ -173,69 +188,97 @@ public class FileSystem {
         Journal.writeLine(commandName, getTargetPath(""), OperationStatus.FAILED, "diretório não axiste");
     }
 
-    // Remove directory
-    // [x] command: rm -r <name>
-    // [TODO:] command: rm -r <path>
-    private void removeDirectory(List<String> args, String commandName) {
+    // Remove files or directory
+    private void removeEntry(List<String> args, String commandName, boolean isFile) {
         if (args == null || args.isEmpty()) {
-            PrintManager.printInfo("Uso correto: rm -r <nome_arquivo>");
+            PrintManager
+                    .printInfo("Uso correto: " + commandName + " <nome_" + (isFile ? "arquivo" : "diretório") + ">");
             return;
         }
 
         if (args.size() != 1) {
-            PrintManager.printInfo("No momento o comando aceita apenas um nome de diretório");
+            PrintManager
+                    .printInfo("No momento o comando aceita apenas um nome de " + (isFile ? "arquivo" : "diretório"));
             return;
         }
 
         String path = args.get(0);
-        OperationStatus status = this.currentDir.removeSubDir(path);
+        FileSystemEntry entry = isFile ? currentDir.removeFile(path) : currentDir.removeDir(path);
+        OperationStatus status = entry != null ? OperationStatus.SUCCESS : OperationStatus.FAILED;
+        String tipo = isFile ? "arquivo" : "diretório";
 
-        if (status == OperationStatus.CREATED) {
-            Journal.writeLine(commandName, getTargetPath(path), status, "diretório removido");
-            return;
-        }
-
-        if (status == OperationStatus.FAILED) {
-            Journal.writeLine(commandName, getTargetPath(path), status, "falha ao remover diretório");
-            return;
-        }
-    }
-
-    // [x] command: rm <name>
-    // [TODO:] command: rm <path>
-    private void removeFile(List<String> args, String commandName) {
-        if (args == null || args.isEmpty()) {
-            PrintManager.printInfo("Uso correto: rm <nome_arquivo>");
-            return;
-        }
-
-        if (args.size() != 1) {
-            PrintManager.printInfo("No momento o comando aceita apenas um nome de arquivo");
-            return;
-        }
-
-        String path = args.get(0);
-        OperationStatus status = this.currentDir.removeFile(path);
-
-        if (status == OperationStatus.DELETED) {
-            Journal.writeLine(commandName, getTargetPath(path), status, "arquivo removido");
-            return;
-        }
+        Journal.writeLine(commandName, getTargetPath(path), status,
+                status == OperationStatus.SUCCESS ? tipo + " removido" : "falha ao remover " + tipo);
 
         if (status == OperationStatus.FAILED) {
-            Journal.writeLine(commandName, getTargetPath(path), status, "falha ao remover arquivo");
-            return;
+            PrintManager.printInfo("falha ao remover " + tipo);
         }
     }
 
-    // TODO:
-    // Rename directory - command: mv <current_name> <new_name>
-    private void renameDirectory(String path) {
-    }
+    // Remove Directory or File
+    private void renameEntry(List<String> args, String commandName, boolean isFile) {
+        if (args == null || args.size() != 2) {
+            PrintManager.printInfo("Uso correto: " + commandName + " <nome_antigo> <nome_novo>");
+            return;
+        }
 
-    // TODO:
-    // Rename file - command: mv <current_name> <new_name>
-    private void renameFile(String path) {
+        String prefix = isFile ? "Arquivo" : "Diretório";
+        String oldName = args.get(0);
+        String newName = args.get(1);
+        String formatedNewName = Utils.removeInvalidChars(newName);
+
+        if (formatedNewName == null || formatedNewName.isBlank()) {
+            Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.FAILED,
+                    "novo nome inválido: " + newName);
+            PrintManager.printInfo("Novo nome inválido");
+            return;
+        }
+
+        FileSystemEntry entry;
+
+        if (isFile) {
+            entry = this.currentDir.removeFile(oldName);
+        } else {
+            entry = this.currentDir.removeDir(oldName);
+        }
+
+        if (entry == null) {
+            Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.FAILED,
+                    "não existe " + prefix + " com nome: " + oldName);
+            PrintManager.printInfo(prefix + " com nome " + oldName + " não existe");
+            return;
+        }
+
+        boolean hasFormatedEntry;
+
+        if (isFile) {
+            hasFormatedEntry = this.currentDir.hasFile(formatedNewName);
+        } else {
+            hasFormatedEntry = this.currentDir.hasDir(formatedNewName);
+        }
+
+        if (hasFormatedEntry) {
+            Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.FAILED,
+                    prefix + " com " + formatedNewName + " já existe");
+            PrintManager.printInfo(prefix + " com " + formatedNewName + " já existe");
+            return;
+        }
+
+        entry.setName(formatedNewName);
+        OperationStatus status;
+
+        if (isFile) {
+            status = this.currentDir.addFile((File) entry);
+        } else {
+            status = this.currentDir.addDir((Directory) entry);
+        }
+
+        // I'm assuming that no error will occur when adding the new file
+        if (status == OperationStatus.SUCCESS) {
+            Journal.writeLine(commandName, getTargetPath(oldName), OperationStatus.SUCCESS,
+                    prefix + " renomeado com sucesso");
+            PrintManager.printInfo(prefix + " renomeado com sucesso");
+        }
     }
 
     //
@@ -243,7 +286,7 @@ public class FileSystem {
         return this.getCurrentPath() + "/" + targetName;
     }
 
-    //
+    // TODO: Atualizar
     private void printHelp() {
         System.out.println("""
                 Comandos disponíveis:
@@ -271,29 +314,38 @@ public class FileSystem {
             return;
 
         switch (command) {
-            case "cd":
-                navigate(args, "cd");
+            case navigationCmd: // Navigation
+                navigate(args, navigationCmd);
                 break;
-            case "cls":
-                clearTerminal("cls");
+            case clearTerminalCmd: // Clear terminal
+                clearTerminal(clearTerminalCmd);
                 break;
-            case "dir":
-                listDirectories(args, "dir");
+            case copyDirCmd: // Copy directory
+                copyDirectory(args, copyDirCmd);
                 break;
-            case "ls":
-                listDirectories(args, "ls");
+            case copyFileCmd: // Copy file
+                copyFile(args, copyFileCmd);
                 break;
-            case "mkdir":
-                createSubDirectory(args, "mkdir");
+            case listCmd: // List directory
+                listDirectories(args, listCmd);
                 break;
-            case "rm":
-                removeFile(args, "rm");
+            case createDirCmd: // Create directory
+                createSubDirectory(args, createDirCmd);
                 break;
-            case "rm -r":
-                removeFile(args, "rm");
+            case removeFileCmd: // Remove file
+                removeEntry(args, removeFileCmd, true);
                 break;
-            case "touch":
-                createFile(args, "touch");
+            case removeDirCmd: // Remove directory
+                removeEntry(args, removeDirCmd, false);
+                break;
+            case createFileCmd: // Create file
+                createFile(args, createFileCmd);
+                break;
+            case renameDirCmd:
+                renameEntry(args, renameDirCmd, false);
+                break;
+            case renameFileCmd:
+                renameEntry(args, renameFileCmd, true);
                 break;
             case "man":
             case "help":

@@ -31,31 +31,31 @@ Legenda
 
 * rm - Remover arquivo:
     Requisitos:
-      ⚠️ rm nome_arquivo
-      ❌ rm path
+      ⚠️ rmf nome_arquivo
+      ❌ rmf path
 
 * rm - Remover diretório:
     Requisitos:
-      ⚠️ rm -r nome_diretório
-      ❌ rm -r path
+      ⚠️ rmd  nome_diretório
+      ❌ rmd path
 
-* mv - Remover arquivo:
+* mv - Renomear arquivo:
     Requisitos:
-      ❌ mv nome_antigo.txt novo_nome.txt
+      ⚠️ rnf nome_antigo.txt novo_nome.txt
 
-* mv - Remover diretório:
+* mv - Renomear diretório:
     Requisitos:
-      ❌ mv nome_antigo.txt novo_nome.txt
+      ⚠️ rnd nome_antigo novo_nome
 
 * cp - Copiar arquivo:
     Requisitos:
-      ❌ cp arquivo.txt copia.txt
-      ❌ cp arquivo.txt path
+      ❌ cpf arquivo.txt copia.txt
+      ❌ cpf arquivo.txt path
 
-* cp - Remover diretório:
+* cp - Copiar diretório:
     Requisitos:
-      ❌ cp -r diretório diretório_copia.txt
-      ❌ cp -r diretório path
+      ❌ cpd -r diretório diretório_copia.txt
+      ❌ cpd -r diretório path
 
 * cls, clear - Limpar terminal:
     Requisitos:
