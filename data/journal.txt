@@ -98,3 +98,20 @@ Hora                 Comando   Status     Path       Info
 03/06/2025  00:20    rmd       success    root//casa diretório removido
 03/06/2025  00:20    ls        success    root//     listagem da pasta
 03/06/2025  00:22    mkdir     created    root/caa   diretório criado
+03/06/2025  10:28    ls        success    root/      listagem da pasta
+03/06/2025  10:35    md        created    root/pasta diretório criado
+03/06/2025  10:35    ls        success    root/      listagem da pasta
+03/06/2025  10:39    md        created    root/casa  diretório criado
+03/06/2025  10:39    ls        success    root/      listagem da pasta
+03/06/2025  10:39    md        created    root/pasta diretório criado
+03/06/2025  10:39    ls        success    root/      listagem da pasta
+03/06/2025  10:49    md        created    root/casa  diretório criado
+03/06/2025  10:49    ls        success    root/      listagem da pasta
+03/06/2025  10:49    mf        created    root/file  arquivo criado
+03/06/2025  10:49    ls        success    root/      listagem da pasta
+03/06/2025  10:51    md        created    root/casa  diretório criado
+03/06/2025  10:51    ls        success    root/      listagem da pasta
+03/06/2025  10:51    md        created    root/casa  diretório criado
+03/06/2025  10:51    ls        success    root/      listagem da pasta
+03/06/2025  10:51    mf        created    root/p     arquivo criado
+03/06/2025  10:51    ls        success    root/      listagem da pasta

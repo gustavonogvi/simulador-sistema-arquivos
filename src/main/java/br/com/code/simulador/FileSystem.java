@@ -16,18 +16,18 @@ public class FileSystem {
     private Directory root;
     private Directory currentDir;
 
-    public static final String clearTerminalCmd = "cls";
+    public static final String clearTerminalCmd = "ct";
     public static final String navigationCmd = "cd";
     public static final String listCmd = "ls";
     public static final String helpCmd = "help";
 
     public static final String copyFileCmd = "cpf";
-    public static final String createFileCmd = "cf";
+    public static final String createFileCmd = "mf";
     public static final String removeFileCmd = "rmf";
     public static final String renameFileCmd = "rnf";
 
     public static final String copyDirCmd = "cpd";
-    public static final String createDirCmd = "mkdir";
+    public static final String createDirCmd = "md";
     public static final String removeDirCmd = "rmd";
     public static final String renameDirCmd = "rnd";
 
@@ -289,18 +289,23 @@ public class FileSystem {
     // TODO: Atualizar
     private void printHelp() {
         System.out.println("""
-                Comandos disponíveis:
-                  mkdir <dir>      - Criar uma nova pasta
-                  touch <file>     - Criar um novo arquivo
-                  ls [dir]         - Listar o conteúdo de uma pasta
-                  rm <file|dir>    - Remover arquivo ou pasta
-                  cd <dir>         - Ir para outro diretório
-                  pwd              - Mostrar o caminho atual
-                  man | help       - Mostrar esta ajuda
-                  dmesg            - Mostrar mensagens do sistema
-                  sysctl           - Exibir informações do sistema
-                  cls              - Limpar a tela
-                  exit             - Sair do sistema
+                                Comandos disponíveis:
+                    md <dir> _________________ Criar uma nova pasta
+                    mf <file> ________________ Criar um novo arquivo
+                    ls _______________________ Listar o conteúdo de uma pasta
+                    rmf <nome_arquvio> _______ Remover um arquivo
+                    rmd <nome_dir> ___________ Remover uma pasta
+                    cd <nome_dir> ____________ Ir para outro diretório
+                    pwd ______________________ Mostrar o caminho atual
+                    help _____________________ Mostrar esta ajuda
+                    dmesg ____________________ Mostrar mensagens do sistema
+                    sysctl ___________________ Exibir informações do sistema
+                    ct _______________________ Limpar a tela
+                    cpf <velho> <novo> _______ Copiar um arquivo
+                    cpd <velho> <novo> _______ Copiar uma pasta
+                    rnf <velho> <novo> _______ Renomear um arquivo
+                    rnd <velho> <novo> _______ Renomear uma pasta
+                    exit _____________________ Sair do sistema
                 """);
     }
 

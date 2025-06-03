@@ -1,19 +1,23 @@
 package br.com.code.simulador.file_system_entries;
 
 import java.io.Serializable;
+import java.security.KeyStore.Entry;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import br.com.code.simulador.enums.EntryType;
 import br.com.code.simulador.utils.Utils;
 
 public abstract class FileSystemEntry implements Serializable {
     protected String name;
     protected Directory parent;
+    protected EntryType type;
+    protected int length;
 
     protected Timestamp creationTime;
     protected Timestamp lastWriteTime;
 
-    public String invalidChars = "[\\\\/|*?<>]";
+    private final String invalidChars = "[\\\\/|*?<>]";
 
     protected FileSystemEntry(String name, Directory parent) {
         name = Utils.removeInvalidChars(name.trim());
@@ -46,6 +50,10 @@ public abstract class FileSystemEntry implements Serializable {
         return parent;
     }
 
+    public int getLength() {
+        return length;
+    }
+
     public Timestamp getLastWrittenTime() {
         return lastWriteTime;
     }
@@ -63,16 +71,12 @@ public abstract class FileSystemEntry implements Serializable {
         return parent.getPath() + this.name + "/";
     }
 
-    public String getType() {
-        return isDirectory() ? "directory" : "file";
+    public EntryType getType() {
+        return this.type;
     }
 
     public void setName(String newName) {
         name = newName;
-    }
-
-    public boolean isFile() {
-        return !isDirectory();
     }
 
     public boolean isRoot() {
@@ -89,5 +93,4 @@ public abstract class FileSystemEntry implements Serializable {
         return new Timestamp(dataAtual.getTime());
     }
 
-    public abstract boolean isDirectory();
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+
+import br.com.code.simulador.enums.EntryType;
 import br.com.code.simulador.enums.OperationStatus;
 
 public class Directory extends FileSystemEntry {
@@ -15,6 +17,7 @@ public class Directory extends FileSystemEntry {
         super(name, parent);
         this.directories = new HashMap<>();
         this.files = new HashMap<>();
+        this.type = EntryType.DIRECTORY;
     }
 
     // Construtor especial. Vai ser usado apenas para criar o root
@@ -40,11 +43,6 @@ public class Directory extends FileSystemEntry {
 
     public static Directory createRoot() {
         return new Directory();
-    }
-
-    @Override
-    public boolean isDirectory() {
-        return true;
     }
 
     // Add a Directory to the directories list

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import br.com.code.simulador.file_system_entries.FileSystemEntry;
+import br.com.code.simulador.utils.Utils;
 
 public class PrintManager {
 
@@ -45,10 +46,11 @@ public class PrintManager {
         System.out.printf(format, "----", "-------------", "------", "----");
 
         for (FileSystemEntry entry : sortedEntries) {
-            String type = entry.getType();
+            String type = entry.getType().name().toLowerCase();
             String time = sdf.format(entry.getLastWrittenTime());
             // String lengthStr = entry.isDirectory() ? "" : String.valueOf("");
-            String lengthStr = "1200";
+            int length = entry.getLength();
+            String lengthStr = length == 0 ? "" : "" + length;
             String name = entry.getName();
             System.out.printf(format, type, time, lengthStr, name);
         }
