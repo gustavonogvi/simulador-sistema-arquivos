@@ -1,0 +1,7 @@
+Hora                 Comando   Status     Path       Info       
+----                 -------   ----       -----      ----       
+03/06/2025  12:34    mkd       created    root/casa  diretório criado
+03/06/2025  12:34    ls        success    root/      listagem da pasta
+03/06/2025  12:35    ls        success    root/      listagem da pasta
+03/06/2025  12:35    rmd       success    root/p     diretório removido
+03/06/2025  12:35    ls        success    root/      listagem da pasta
