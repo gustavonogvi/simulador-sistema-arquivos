@@ -28,7 +28,7 @@ public class Journal {
         }
     }
 
-    // Modelo
+    // Modelo do windows. Vamos fazer parecido
     // [timestamp] [command] [target] [status] [info extra]
     // 2025-06-02T20:30:15 mkdir /docs SUCCESS Created directory
     // 2025-06-02T20:31:02 touch /docs/notes.txt SUCCESS Created file

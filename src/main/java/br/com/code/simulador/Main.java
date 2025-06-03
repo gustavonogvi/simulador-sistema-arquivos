@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         // TODO: Remover daqui e colocar em uma classe. FileSystem talvez?
         Scanner scanner = new Scanner(System.in);
-        FileSystem fs = new FileSystem();
+        FileSystemSimulator fs = new FileSystemSimulator();
         String input;
 
         PrintManager.clearTerminal();

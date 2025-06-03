@@ -27,6 +27,7 @@ public class Directory extends FileSystemEntry {
         this.files = new HashMap<>();
     }
 
+    //
     public Directory getDir(String name) {
         return this.directories.get(name);
     }
@@ -41,6 +42,7 @@ public class Directory extends FileSystemEntry {
         return this.files.containsKey(name);
     }
 
+    // Create a directory that dont have a parent directory
     public static Directory createRoot() {
         return new Directory();
     }
@@ -89,6 +91,7 @@ public class Directory extends FileSystemEntry {
         return OperationStatus.CREATED;
     }
 
+    //
     public OperationStatus addFile(File file) {
         String name = file.getName();
 
@@ -106,17 +109,12 @@ public class Directory extends FileSystemEntry {
         return this.files.remove(name);
     }
 
-    //
-    public void rename(String path, String newName) {
-
-    }
-
-    //
+    // TODO:
     public void copy(String sourcePath, String destPath) {
 
     }
 
-    //
+    // TODO: Precisa?
     private Directory deepCopy() {
         return null;
     }

@@ -12,7 +12,7 @@ import br.com.code.simulador.managers.PersistanceManager;
 import br.com.code.simulador.managers.PrintManager;
 import br.com.code.simulador.utils.Utils;
 
-public class FileSystem {
+public class FileSystemSimulator {
     private Directory root;
     private Directory currentDir;
 
@@ -357,6 +357,9 @@ public class FileSystem {
             default:
                 System.err.println("Comando não reconhecido. Digite 'help' para ver os comandos disponíveis.");
         }
+
+        // Pior canto, mas funciona :)
+        PersistanceManager.save(root);
     }
 
 }
