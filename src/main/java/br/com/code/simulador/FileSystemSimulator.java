@@ -30,6 +30,8 @@ public class FileSystemSimulator {
     public static final String createDirCmd = "mkd";
     public static final String removeDirCmd = "rmd";
     public static final String renameDirCmd = "rnd";
+    public static final String moveCmd = "mv";
+
 
     // Initialize the File System
     public void init() {
@@ -63,6 +65,47 @@ public class FileSystemSimulator {
         return this.currentDir.getPath();
     }
 
+    public void move(String sourcePath, String destPath) {
+    FileSystemEntry sourceEntry = resolvePath(sourcePath);
+    if (sourceEntry == null) {
+        System.out.println("mv: origem não encontrada.");
+        return;
+    }
+
+    Directory sourceParent = sourceEntry.getParent();
+    if (sourceParent == null) {
+        System.out.println("mv: não é possível mover o diretório raiz.");
+        return;
+    }
+
+    Directory destDir = resolveDirectory(destPath);
+    if (destDir == null) {
+        System.out.println("mv: destino não encontrado ou não é um diretório.");
+        return;
+    }
+
+    String name = sourceEntry.getName();
+
+    // Verifica se já existe algo com o mesmo nome no destino
+    if ((sourceEntry instanceof File && destDir.hasFile(name)) ||
+        (sourceEntry instanceof Directory && destDir.hasDir(name))) {
+        System.out.println("mv: já existe um item com esse nome no destino.");
+        return;
+    }
+
+    // Remove da origem
+    if (sourceEntry instanceof File) {
+        sourceParent.removeFile(name);
+        destDir.addFile((File) sourceEntry);
+    } else {
+        sourceParent.removeDir(name);
+        destDir.addDir((Directory) sourceEntry);
+    }
+
+    sourceEntry.parent = destDir;
+
+    System.out.println("mv: item movido com sucesso.");
+}
     //
     private void clearTerminal(String comandName) {
         PrintManager.clearTerminal();
@@ -72,20 +115,144 @@ public class FileSystemSimulator {
     // TODO:
     // Copy files - command: cp <origen> <destiny>
     private void copyDirectory(List<String> args, String commandName) {
-        if (args == null) {
-            PrintManager.printInfo("Uso correto: " + commandName + "<arquivo_ou_pasta>");
-            return;
-        }
+    // args: ["-r", "origem", "destino"]
+    if (args == null || args.size() != 3 || !args.get(0).equals("-r")) {
+        PrintManager.printInfo("Uso: " + commandName + " -r <origem> <destino>");
+        return;
     }
 
-    // TODO:
-    // Copy files - command: cp <origen> <destiny>
-    private void copyFile(List<String> args, String commandName) {
-        if (args == null) {
-            PrintManager.printInfo("Uso correto: " + commandName + "<arquivo_ou_pasta>");
+    String sourcePath = args.get(1);
+    String destPath   = args.get(2);
+
+    FileSystemEntry origem = resolvePath(sourcePath);
+    if (origem == null || !(origem instanceof Directory)) {
+        PrintManager.printInfo(commandName + ": diretório de origem não encontrado.");
+        Journal.writeLine(commandName, sourcePath, OperationStatus.FAILED, "origem inválida");
+        return;
+    }
+    Directory dirOrigem = (Directory) origem;
+
+    Directory destinoDir = resolveDirectory(destPath);
+    String novoNome      = dirOrigem.getName();
+
+    if (destinoDir != null) {
+        // destino é diretório existente: copiamos com mesmo nome dentro dele
+    } else {
+        // talvez 'destPath' seja um caminho novo, ex: "pastaPai/novaCopia"
+        int idx = destPath.lastIndexOf('/');
+        String parentPath = (idx == -1) ? "." : destPath.substring(0, idx);
+        String lastName   = (idx == -1) ? destPath : destPath.substring(idx + 1);
+
+        Directory parentDir = resolveDirectory(parentPath);
+        if (parentDir == null) {
+            PrintManager.printInfo(commandName + ": diretório de destino inválido.");
+            Journal.writeLine(commandName, destPath, OperationStatus.FAILED, "destino inválido");
             return;
         }
+        destinoDir = parentDir;
+        novoNome   = lastName;
     }
+
+    // verificar conflito no destino
+    if (destinoDir.hasDir(novoNome)) {
+        PrintManager.printInfo(commandName + ": já existe um diretório com esse nome no destino.");
+        Journal.writeLine(commandName, destPath, OperationStatus.FAILED, "pasta já existe");
+        return;
+    }
+    if (destinoDir.hasFile(novoNome)) {
+        PrintManager.printInfo(commandName + ": já existe um arquivo com esse nome no destino.");
+        Journal.writeLine(commandName, destPath, OperationStatus.FAILED, "nome já existe como arquivo");
+        return;
+    }
+
+    Directory copia = deepCopyDirectory(dirOrigem, destinoDir, novoNome);
+    destinoDir.addDir(copia);
+
+    PrintManager.printInfo("Diretório copiado com sucesso.");
+    Journal.writeLine(commandName, destPath + "/" + novoNome, OperationStatus.CREATED, "pasta copiada");
+}
+
+private Directory deepCopyDirectory(Directory original, Directory novoParent, String novoNome) {
+    // criar instância do diretório-cópia com nome 'novoNome'
+    Directory copia = new Directory(novoNome, novoParent);
+
+    // copiar arquivos diretos
+    for (String fileName : original.files.keySet()) {
+        File arquivoOrig = original.getFile(fileName);
+        File arquivoCopy = new File(arquivoOrig.getName(), copia);
+        arquivoCopy.setContent(arquivoOrig.getContent());
+        copia.addFile(arquivoCopy);
+    }
+
+    // copiar subdiretórios recursivamente
+    for (String subdirName : original.directories.keySet()) {
+        Directory dirOrigSub = original.getDir(subdirName);
+        Directory subCopy    = deepCopyDirectory(dirOrigSub, copia, dirOrigSub.getName());
+        copia.addDir(subCopy);
+    }
+
+    return copia;
+}
+    // TODO:
+    // Copy files - command: cp <origen> <destiny>
+private void copyFile(List<String> args, String commandName) {
+    if (args == null || args.size() != 2) {
+        PrintManager.printInfo("Uso: " + commandName + " <origem> <destino>");
+        return;
+    }
+
+    String sourcePath = args.get(0);
+    String destPath   = args.get(1);
+
+    //localizar a entrada de origem
+    FileSystemEntry origem = resolvePath(sourcePath);
+    if (origem == null || !(origem instanceof File)) {
+        PrintManager.printInfo(commandName + ": arquivo de origem não encontrado.");
+        Journal.writeLine(commandName, sourcePath, OperationStatus.FAILED, "origem inválida");
+        return;
+    }
+    File arquivoOrigem = (File) origem;
+
+    // tentar resolver 'destino' como diretório
+    Directory destinoDir = resolveDirectory(destPath);
+    String novoNome       = arquivoOrigem.getName();
+
+    if (destinoDir != null) {
+    } else {
+        int idx = destPath.lastIndexOf('/');
+        String parentPath = (idx == -1) ? "." : destPath.substring(0, idx);
+        String lastName   = (idx == -1) ? destPath : destPath.substring(idx + 1);
+
+        Directory parentDir = resolveDirectory(parentPath);
+        if (parentDir == null) {
+            PrintManager.printInfo(commandName + ": diretório de destino inválido.");
+            Journal.writeLine(commandName, destPath, OperationStatus.FAILED, "destino inválido");
+            return;
+        }
+        destinoDir = parentDir;
+        novoNome   = lastName;
+    }
+
+    if (destinoDir.hasFile(novoNome)) {
+        PrintManager.printInfo(commandName + ": já existe um arquivo com esse nome no destino.");
+        Journal.writeLine(commandName, destPath, OperationStatus.FAILED, "arquivo já existe");
+        return;
+    }
+    if (destinoDir.hasDir(novoNome)) {
+        PrintManager.printInfo(commandName + ": já existe um diretório com esse nome no destino.");
+        Journal.writeLine(commandName, destPath, OperationStatus.FAILED, "nome já existe como pasta");
+        return;
+    }
+
+    // Construir a cópia
+    File copia = new File(novoNome, destinoDir);
+    copia.setContent(arquivoOrigem.getContent());
+    destinoDir.addFile(copia);
+
+    PrintManager.printInfo("Arquivo copiado com sucesso.");
+    Journal.writeLine(commandName, destPath + "/" + novoNome, OperationStatus.CREATED, "arquivo copiado");
+}
+
 
     // Create file - command: touch <file>
     private void createFile(List<String> args, String commandName) {
@@ -141,6 +308,37 @@ public class FileSystemSimulator {
         }
     }
 
+         private FileSystemEntry resolvePath(String path) {
+        if (path == null || path.isBlank()) return null;
+
+        Directory current = path.startsWith("/") ? root : currentDir;
+
+        String[] parts = path.replaceAll("^/+", "").split("/");
+
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+
+            if (i == parts.length - 1) {
+                // Último elemento: pode ser diretório ou arquivo
+                if (current.hasDir(part)) return current.getDir(part);
+                if (current.hasFile(part)) return current.getFile(part);
+                return null;
+            }
+
+            if (current.hasDir(part)) {
+                current = current.getDir(part);
+            } else {
+                return null;
+            }
+        }
+
+        return current;
+    }
+
+    private Directory resolveDirectory(String path) {
+        FileSystemEntry entry = resolvePath(path);
+        return (entry instanceof Directory) ? (Directory) entry : null;
+    }
     // Listar arquivos de um diretório
     private void listDirectories(List<String> args, String commandName) {
         if (args.size() != 0) {
@@ -152,6 +350,44 @@ public class FileSystemSimulator {
         PrintManager.printDirectoryContent(getCurrentPath(), sortedEntries);
         Journal.writeLine(commandName, getTargetPath(""), OperationStatus.SUCCESS, "listagem da pasta");
     }
+private void moveEntry(List<String> args, String command) {
+    if (args.size() < 2) {
+        System.out.println("Uso: mv <origem> <destino>");
+        return;
+    }
+
+    String origemPath = args.get(0);
+    String destinoPath = args.get(1);
+
+    FileSystemEntry origem = resolvePath(origemPath);
+    Directory destino = resolveDirectory(destinoPath);
+
+    if (origem == null) {
+        System.out.println("Erro: entrada de origem não encontrada.");
+        return;
+    }
+
+    if (destino == null) {
+        System.out.println("Erro: diretório de destino não encontrado.");
+        return;
+    }
+
+    origem.getParent().removeFile(origem.getName());
+
+    if (origem instanceof File) {
+        destino.addFile((File) origem);
+        System.out.println("Arquivo movido com sucesso.");
+    } else if (origem instanceof Directory) {
+        origem.getParent().removeDir(origem.getName());
+        destino.addDir((Directory) origem);
+        System.out.println("Diretório movido com sucesso.");
+    } else {
+        System.out.println("Tipo de entrada desconhecido.");
+    }
+
+    origem.getParent().removeFile(origem.getName());
+    origem.updateLastWriteTime();
+}
 
     // Navegar entre diretórios
     private void navigate(List<String> args, String commandName) {
@@ -304,6 +540,7 @@ public class FileSystemSimulator {
                     rnf <velho> <novo> _______ Renomear um arquivo
                     rnd <velho> <novo> _______ Renomear uma pasta
                     exit _____________________ Sair do sistema
+                    mv <origem> <destino> ____ Mover um item
                 """);
     }
 
@@ -341,6 +578,9 @@ public class FileSystemSimulator {
             case removeDirCmd: // Remove directory
                 removeEntry(args, removeDirCmd, false);
                 break;
+            case moveCmd:
+                moveEntry(args, moveCmd);
+                break;    
             case createFileCmd: // Create file
                 createFile(args, createFileCmd);
                 break;

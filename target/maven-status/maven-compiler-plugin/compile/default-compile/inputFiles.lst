@@ -1,6 +1,11 @@
-C:\Users\mauricio\OneDrive\Faculdade\Semestre 05\SO\trabalhos\trabalho_03_simulador_diretório\simulador-sistema-arquivos\src\main\java\br\com\gustavo\simuladorfs\BootManager.java
-C:\Users\mauricio\OneDrive\Faculdade\Semestre 05\SO\trabalhos\trabalho_03_simulador_diretório\simulador-sistema-arquivos\src\main\java\br\com\gustavo\simuladorfs\DirectoryEntry.java
-C:\Users\mauricio\OneDrive\Faculdade\Semestre 05\SO\trabalhos\trabalho_03_simulador_diretório\simulador-sistema-arquivos\src\main\java\br\com\gustavo\simuladorfs\FileEntry.java
-C:\Users\mauricio\OneDrive\Faculdade\Semestre 05\SO\trabalhos\trabalho_03_simulador_diretório\simulador-sistema-arquivos\src\main\java\br\com\gustavo\simuladorfs\FileSystemSimulator.java
-C:\Users\mauricio\OneDrive\Faculdade\Semestre 05\SO\trabalhos\trabalho_03_simulador_diretório\simulador-sistema-arquivos\src\main\java\br\com\gustavo\simuladorfs\Journal.java
-C:\Users\mauricio\OneDrive\Faculdade\Semestre 05\SO\trabalhos\trabalho_03_simulador_diretório\simulador-sistema-arquivos\src\main\java\br\com\gustavo\simuladorfs\Main.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/FileSystemSimulator.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/Journal.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/Main.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/enums/EntryType.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/enums/OperationStatus.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/file_system_entries/Directory.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/file_system_entries/File.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/file_system_entries/FileSystemEntry.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/managers/PersistanceManager.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/managers/PrintManager.java
+/home/gvn/simulador-sistema-arquivos/src/main/java/br/com/code/simulador/utils/Utils.java

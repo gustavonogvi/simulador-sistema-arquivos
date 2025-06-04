@@ -1,5 +1,11 @@
-br\com\gustavo\simuladorfs\Journal.class
-br\com\gustavo\simuladorfs\DirectoryEntry.class
-br\com\gustavo\simuladorfs\FileEntry.class
-br\com\gustavo\simuladorfs\FileSystemSimulator.class
-br\com\gustavo\simuladorfs\Main.class
+br/com/code/simulador/FileSystemSimulator.class
+br/com/code/simulador/file_system_entries/FileSystemEntry.class
+br/com/code/simulador/Journal.class
+br/com/code/simulador/file_system_entries/Directory.class
+br/com/code/simulador/utils/Utils.class
+br/com/code/simulador/managers/PrintManager.class
+br/com/code/simulador/file_system_entries/File.class
+br/com/code/simulador/Main.class
+br/com/code/simulador/enums/EntryType.class
+br/com/code/simulador/managers/PersistanceManager.class
+br/com/code/simulador/enums/OperationStatus.class

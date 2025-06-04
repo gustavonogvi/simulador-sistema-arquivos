@@ -10,8 +10,8 @@ import br.com.code.simulador.enums.OperationStatus;
 
 public class Directory extends FileSystemEntry {
 
-    private HashMap<String, Directory> directories;
-    private HashMap<String, File> files;
+    public HashMap<String, Directory> directories;
+    public HashMap<String, File> files;
 
     public Directory(String name, Directory parent) {
         super(name, parent);
@@ -31,6 +31,9 @@ public class Directory extends FileSystemEntry {
     public Directory getDir(String name) {
         return this.directories.get(name);
     }
+    public File getFile(String name) {
+    return this.files.get(name);
+}
 
     //
     public boolean hasDir(String name) {

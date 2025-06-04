@@ -19,7 +19,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>br.com.gustavo.simuladorfs.Main</mainClass>
+                    <mainClass>br.com.code.simulador.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
