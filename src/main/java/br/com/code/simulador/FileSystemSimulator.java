@@ -522,7 +522,7 @@ public class FileSystemSimulator {
 
     //
     private String getTargetPath(String targetName) {
-        return this.getCurrentPath() + "/" + targetName;
+        return this.getCurrentPath() + targetName;
     }
 
     // TODO: Atualizar
